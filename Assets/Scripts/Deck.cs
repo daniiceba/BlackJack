@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Deck : MonoBehaviour
@@ -12,9 +13,11 @@ public class Deck : MonoBehaviour
     public Text finalMessage;
     public Text probMessage;
 
+    public List<GameObject> cards = new List<GameObject>();
+
     public int[] values = new int[52];
-    int cardIndex = 0;    
-       
+    int cardIndex = 0;
+
     private void Awake()
     {    
         InitCardValues();        
@@ -29,20 +32,58 @@ public class Deck : MonoBehaviour
 
     private void InitCardValues()
     {
-        /*TODO:
-         * Asignar un valor a cada una de las 52 cartas del atributo "values".
-         * En principio, la posición de cada valor se deberá corresponder con la posición de faces. 
-         * Por ejemplo, si en faces[1] hay un 2 de corazones, en values[1] debería haber un 2.
-         */
+       
+        for(int i = 0; i < 52; i++)
+        {
+            if ((i + 1) % 12 == 0)
+            {
+                values[i] = 12;
+            }
+            else
+            {
+                values[i] = (i + 1) % 12;
+            }
+            
+        }
+
+
     }
 
     private void ShuffleCards()
     {
-        /*TODO:
-         * Barajar las cartas aleatoriamente.
-         * El método Random.Range(0,n), devuelve un valor entre 0 y n-1
-         * Si lo necesitas, puedes definir nuevos arrays.
-         */       
+        
+
+        CardHand barajaDealer = dealer.GetComponent<CardHand>();
+
+
+        List<int> baraja = new List<int>();
+        
+
+        for(int i = 0; i < 52; i++)
+        {
+            int nRand = Random.Range(0, 51);
+
+            if (!baraja.Contains(nRand))
+            {
+                addCard(i, nRand);
+            }
+            else
+            {
+                while (!baraja.Contains(nRand))
+                {
+                    if (nRand > 51) nRand = 0;
+                    addCard(i, nRand++);
+
+                }
+            }
+
+        }       
+    }
+
+    private void addCard(int i, int nRand)
+    {
+        faces[nRand] = faces[i];
+        values[nRand] = values[i];
     }
 
     void StartGame()
@@ -91,14 +132,21 @@ public class Deck : MonoBehaviour
         /*TODO: 
          * Si estamos en la mano inicial, debemos voltear la primera carta del dealer.
          */
+        if (player.GetComponent<CardHand>().cards.Count == 1)
+        {
+            dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
+
+        }
         
-        //Repartimos carta al jugador
         PushPlayer();
 
         /*TODO:
          * Comprobamos si el jugador ya ha perdido y mostramos mensaje
-         */      
-
+         */
+        if (player.GetComponent<CardHand>().points>21)
+        {
+            finalMessage.text = "Has Perdido ;P";
+        }
     }
 
     public void Stand()
