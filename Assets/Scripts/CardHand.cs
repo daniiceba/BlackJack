@@ -7,35 +7,37 @@ public class CardHand : MonoBehaviour
     public GameObject card;
     public bool isDealer = false;
     public int points;
-    private int coordY;    
-     
+    private int coordY;
+    
     private void Awake()
     {
         points = 0;
+        
         //Definimos dónde posicionamos las cartas de cada uno
         if (!isDealer)
-            coordY = 3;
-        else
             coordY = -1;
+        else
+            coordY = 3;
     }
 
     public void Clear()
     {
         points = 0;
+        
         if (!isDealer)
-            coordY = 3;
-        else
             coordY = -1;
+        else
+            coordY = 3;
         foreach (GameObject g in cards)
         {
             Destroy(g);
         }
-        cards.Clear();                        
-    }        
+        cards.Clear();
+    }
 
     public void InitialToggle()
     {
-        cards[0].GetComponent<CardModel>().ToggleFace(true);              
+        cards[0].GetComponent<CardModel>().ToggleFace(true);
     }
 
     public void Push(Sprite front, int value)
@@ -46,13 +48,13 @@ public class CardHand : MonoBehaviour
 
         //La posicionamos en el tablero 
         float coordX = (float)1.4 * (float)(cards.Count - 4);
-        Vector3 pos = new Vector3(coordX, coordY);               
+        Vector3 pos = new Vector3(coordX, coordY);
         cardCopy.transform.position = pos;
 
         //Le ponemos la imagen y el valor asignado
         cardCopy.GetComponent<CardModel>().front = front;
         cardCopy.GetComponent<CardModel>().value = value;
-        
+
         //La cubrimos si es la primera del dealer
         if (isDealer && cards.Count <= 1)
             cardCopy.GetComponent<CardModel>().ToggleFace(false);
@@ -63,12 +65,18 @@ public class CardHand : MonoBehaviour
         int val = 0;
         int aces = 0;
         foreach (GameObject f in cards)
-        {            
+        {
 
             if (f.GetComponent<CardModel>().value != 11)
+            {
                 val += f.GetComponent<CardModel>().value;
+                
+            }
             else
+            {
                 aces++;
+            }
+            
         }
 
         for (int i = 0; i < aces; i++)
@@ -76,16 +84,19 @@ public class CardHand : MonoBehaviour
             if (val + 11 <= 21)
             {
                 val = val + 11;
+                
             }
             else
             {
                 val = val + 1;
+                
             }
         }
 
         points = val;
-       
+
+
     }
-     
+
 
 }

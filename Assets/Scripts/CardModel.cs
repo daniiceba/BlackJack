@@ -15,6 +15,7 @@ public class CardModel : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+
     public void ToggleFace(bool showFace)
     {
         if (showFace)
